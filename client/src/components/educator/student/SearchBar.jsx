@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom'
 const SearchBar = ({ data }) => {
 
  const navigate = useNavigate()
- const [input, setInput] = useState(data ? data : " ")
+ const [input, setInput] = useState(data ? data : "")
 
  const onSearchHandler = (e) => {
-  e.preventDefault()
+  e.preventDefault();
   navigate('/course-list/' + input)
  }
 

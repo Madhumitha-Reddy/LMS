@@ -22,7 +22,7 @@ const CourseDetails = () => {
 
   useEffect(()=> {
     fetchCourseData()
-  },[])
+  },[allCourses])
 
   const toggleSection = (index) => {
     setOpenSections((prev)=> (
@@ -55,6 +55,7 @@ const CourseDetails = () => {
             <p className="text-sm">Course by<span className="text-blue-600 underline">GreatStack</span></p>
             <div className="pt-8 text-gray-800">
               <h2 className="text-xl font-semibold">Course Structure</h2>
+
               <div className="pt-5">
                 {courseData.courseContent.map((chapter, index) => (
                   <div key={index} className="border border-gray-300 bg-white mb-2 rounded">
@@ -77,7 +78,7 @@ const CourseDetails = () => {
                                 {lecture.isPreviewFree && <p onClick={() => setPlayerData({
                                   videoId: lecture.lectureUrl.split("/").pop()
                                 })}
-                                classname="text-blue-500 cursor-pointer">Preview</p>}
+                                className="text-blue-500 cursor-pointer">Preview</p>}
                                 <p>{humanizeDuration(lecture.lectureDuration * 60 * 1000, {units : ["h", "m"]})}</p>
                               </div>
                             </div>

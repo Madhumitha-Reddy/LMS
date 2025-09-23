@@ -1,8 +1,5 @@
 import express from 'express'
 import cors from 'cors'
-import 'dotenv/config'
-import connectDB from './configs/mongodb.js'
-import { clerkWebhooks } from './controllers/webhooks.js'
 
 // initialize express
 const app = express()
@@ -11,38 +8,34 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-// Connect to database (for Vercel serverless)
-let isConnected = false
-const connectToDB = async () => {
-  if (!isConnected) {
-    try {
-      await connectDB()
-      isConnected = true
-      console.log('Database connected')
-    } catch (error) {
-      console.error('Database connection failed:', error)
-    }
-  }
-}
-
 // Routes
-app.get('/', async (req, res) => {
-  try {
-    await connectToDB()
-    res.send("API Working")
-  } catch (error) {
-    res.send("API Not Working")
-  }
+app.get('/', (req, res) => {
+  res.send("🚀 API Working - No Database Required!")
 })
 
-app.post('/clerk', async (req, res) => {
-  try {
-    await connectToDB()
-    clerkWebhooks(req, res)
-  } catch (error) {
-    res.status(500).json({ error: 'Database connection failed' })
-  }
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    message: 'Server is running successfully'
+  })
 })
+
+app.get('/test', (req, res) => {
+  res.json({
+    message: "Test endpoint working!",
+    environment: process.env.NODE_ENV || 'development',
+    time: new Date().toISOString()
+  })
+})
+
+// For local development - start server
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5001
+  app.listen(PORT, () => {
+    console.log(`Server running locally on port ${PORT}`)
+  })
+}
 
 // Export app for Vercel
 export default app

@@ -7,21 +7,31 @@ import { clerkWebhooks } from './controllers/webhooks.js'
 // initialize express
 const app = express()
 
-// connect to database
-
-await connectDB()
-
 // MiddleWares
 app.use(cors())
+app.use(express.json())
 
 // Routes
-app.get('/', (req, res)=> res.send("API Working"))
-app.post('/clerk', express.json(), clerkWebhooks)
+app.get('/', (req, res) => res.send("API Working"))
+app.post('/clerk', clerkWebhooks)
 
+// Connect to database and start server
+const startServer = async () => {
+  try {
+    await connectDB()
+    
+    const PORT = process.env.PORT || 5001
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`)
+    })
+  } catch (error) {
+    console.error('Failed to start server:', error)
+    process.exit(1)
+  }
+}
 
+// Start the server
+startServer()
 
-// PORT
-const PORT = process.env.PORT || 5001
-app.listen(PORT, ()=> {
-    console.log(`Server is running on port ${PORT}`)
-})
+// Export app for Vercel
+export default app

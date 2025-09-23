@@ -61,7 +61,8 @@ app.get('/test', (req, res) => {
     message: "Test endpoint working!",
     environment: process.env.NODE_ENV || 'development',
     time: new Date().toISOString(),
-    hasMongoURI: !!process.env.MONGODB_URI
+    hasMongoURI: !!process.env.MONGODB_URI,
+    allEnvVars: Object.keys(process.env).filter(key => key.includes('MONGO') || key.includes('CLERK'))
   })
 })
 

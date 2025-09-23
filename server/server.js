@@ -31,7 +31,7 @@ app.get('/', async (req, res) => {
     await connectToDB()
     res.send("API Working")
   } catch (error) {
-    res.send("API Working")
+    res.send("API Not Working")
   }
 })
 

@@ -29,9 +29,9 @@ const connectToDB = async () => {
 app.get('/', async (req, res) => {
   try {
     await connectToDB()
-    res.send("API Working - Database Connected")
+    res.send("API Working")
   } catch (error) {
-    res.send("API Working - Database Connection Failed")
+    res.send("API Working")
   }
 })
 

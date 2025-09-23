@@ -11,27 +11,38 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-// Routes
-app.get('/', (req, res) => res.send("API Working"))
-app.post('/clerk', clerkWebhooks)
-
-// Connect to database and start server
-const startServer = async () => {
-  try {
-    await connectDB()
-    
-    const PORT = process.env.PORT || 5001
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`)
-    })
-  } catch (error) {
-    console.error('Failed to start server:', error)
-    process.exit(1)
+// Connect to database (for Vercel serverless)
+let isConnected = false
+const connectToDB = async () => {
+  if (!isConnected) {
+    try {
+      await connectDB()
+      isConnected = true
+      console.log('Database connected')
+    } catch (error) {
+      console.error('Database connection failed:', error)
+    }
   }
 }
 
-// Start the server
-startServer()
+// Routes
+app.get('/', async (req, res) => {
+  try {
+    await connectToDB()
+    res.send("API Working - Database Connected")
+  } catch (error) {
+    res.send("API Working - Database Connection Failed")
+  }
+})
+
+app.post('/clerk', async (req, res) => {
+  try {
+    await connectToDB()
+    clerkWebhooks(req, res)
+  } catch (error) {
+    res.status(500).json({ error: 'Database connection failed' })
+  }
+})
 
 // Export app for Vercel
 export default app
